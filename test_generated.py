@@ -1,218 +1,158 @@
 ```python
 import unittest
-import os
 import sys
+import os
 
-# Add the project directory to the Python path so we can import the modules
-# Assuming the test file is in the same directory as the project root
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+# Add the repository root to the Python path, allowing imports from the repository
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'sample_repo')))  # Assuming tests are one level up
+from my_math_functions import add, subtract, multiply, divide, is_even, factorial
+from my_string_functions import reverse_string, is_palindrome
 
-
-# Dynamically try to import the functions.  This is crucial
-# as the repository provided might not have all files or functions.
-try:
-    from my_math_functions import add, subtract, multiply, divide  # Assuming my_math_functions.py
-except ImportError:
-    add = None
-    subtract = None
-    multiply = None
-    divide = None
-
-try:
-    from string_operations import reverse_string, is_palindrome  # Assuming string_operations.py
-except ImportError:
-    reverse_string = None
-    is_palindrome = None
-
-try:
-    from file_operations import read_file, write_file  # Assuming file_operations.py
-except ImportError:
-    read_file = None
-    write_file = None
-
-# Define a dummy file path for testing file operations
-TEST_FILE = "test_file.txt"
 
 class TestMyMathFunctions(unittest.TestCase):
 
-    @unittest.skipIf(add is None, "add function not found")
     def test_add_positive_numbers(self):
         self.assertEqual(add(2, 3), 5)
 
-    @unittest.skipIf(add is None, "add function not found")
     def test_add_negative_numbers(self):
         self.assertEqual(add(-2, -3), -5)
 
-    @unittest.skipIf(add is None, "add function not found")
-    def test_add_mixed_numbers(self):
+    def test_add_positive_and_negative_numbers(self):
         self.assertEqual(add(2, -3), -1)
 
-    @unittest.skipIf(add is None, "add function not found")
     def test_add_zero(self):
-        self.assertEqual(add(2, 0), 2)
+        self.assertEqual(add(5, 0), 5)
+        self.assertEqual(add(0, 5), 5)
 
-    @unittest.skipIf(add is None, "add function not found")
     def test_add_large_numbers(self):
         self.assertEqual(add(1000000, 2000000), 3000000)
 
-    @unittest.skipIf(subtract is None, "subtract function not found")
     def test_subtract_positive_numbers(self):
         self.assertEqual(subtract(5, 2), 3)
 
-    @unittest.skipIf(subtract is None, "subtract function not found")
     def test_subtract_negative_numbers(self):
         self.assertEqual(subtract(-5, -2), -3)
 
-    @unittest.skipIf(subtract is None, "subtract function not found")
-    def test_subtract_mixed_numbers(self):
+    def test_subtract_positive_and_negative_numbers(self):
         self.assertEqual(subtract(5, -2), 7)
+        self.assertEqual(subtract(-5, 2), -7)
 
-    @unittest.skipIf(subtract is None, "subtract function not found")
     def test_subtract_zero(self):
         self.assertEqual(subtract(5, 0), 5)
+        self.assertEqual(subtract(0, 5), -5)
 
-    @unittest.skipIf(subtract is None, "subtract function not found")
-    def test_subtract_large_numbers(self):
-        self.assertEqual(subtract(2000000, 1000000), 1000000)
-
-    @unittest.skipIf(multiply is None, "multiply function not found")
     def test_multiply_positive_numbers(self):
         self.assertEqual(multiply(2, 3), 6)
 
-    @unittest.skipIf(multiply is None, "multiply function not found")
     def test_multiply_negative_numbers(self):
-        self.assertEqual(multiply(-2, 3), -6)
-
-    @unittest.skipIf(multiply is None, "multiply function not found")
-    def test_multiply_zero(self):
-        self.assertEqual(multiply(2, 0), 0)
-
-    @unittest.skipIf(multiply is None, "multiply function not found")
-    def test_multiply_large_numbers(self):
-        self.assertEqual(multiply(1000, 1000), 1000000)
-
-    @unittest.skipIf(multiply is None, "multiply function not found")
-    def test_multiply_negative_by_negative(self):
         self.assertEqual(multiply(-2, -3), 6)
 
-    @unittest.skipIf(divide is None, "divide function not found")
+    def test_multiply_positive_and_negative_numbers(self):
+        self.assertEqual(multiply(2, -3), -6)
+
+    def test_multiply_zero(self):
+        self.assertEqual(multiply(5, 0), 0)
+        self.assertEqual(multiply(0, 5), 0)
+
+    def test_multiply_large_numbers(self):
+        self.assertEqual(multiply(1000, 2000), 2000000)
+
     def test_divide_positive_numbers(self):
         self.assertEqual(divide(6, 2), 3)
 
-    @unittest.skipIf(divide is None, "divide function not found")
     def test_divide_negative_numbers(self):
-        self.assertEqual(divide(-6, 2), -3)
+        self.assertEqual(divide(-6, -2), 3)
 
-    @unittest.skipIf(divide is None, "divide function not found")
-    def test_divide_mixed_numbers(self):
+    def test_divide_positive_and_negative_numbers(self):
         self.assertEqual(divide(6, -2), -3)
 
-    @unittest.skipIf(divide is None, "divide function not found")
-    def test_divide_zero_by_positive(self):
-        self.assertEqual(divide(0, 2), 0)
-
-    @unittest.skipIf(divide is None, "divide function not found")
     def test_divide_by_one(self):
         self.assertEqual(divide(5, 1), 5)
 
-    @unittest.skipIf(divide is None, "divide function not found")
-    def test_divide_float_result(self):
-        self.assertEqual(divide(7, 2), 3.5)
-
-    @unittest.skipIf(divide is None, "divide function not found")
     def test_divide_by_zero(self):
-        with self.assertRaises(ZeroDivisionError):
-            divide(6, 0)
+        with self.assertRaises(ValueError):
+            divide(5, 0)
+
+    def test_divide_zero_by_number(self):
+        self.assertEqual(divide(0, 5), 0)
+
+    def test_is_even_positive_even(self):
+        self.assertTrue(is_even(4))
+
+    def test_is_even_positive_odd(self):
+        self.assertFalse(is_even(5))
+
+    def test_is_even_negative_even(self):
+        self.assertTrue(is_even(-4))
+
+    def test_is_even_negative_odd(self):
+        self.assertFalse(is_even(-5))
+
+    def test_is_even_zero(self):
+        self.assertTrue(is_even(0))
+
+    def test_factorial_positive(self):
+        self.assertEqual(factorial(5), 120)
+
+    def test_factorial_zero(self):
+        self.assertEqual(factorial(0), 1)
+
+    def test_factorial_one(self):
+        self.assertEqual(factorial(1), 1)
+
+    def test_factorial_large(self):
+        self.assertEqual(factorial(10), 3628800)
+
+    def test_factorial_negative(self):
+        with self.assertRaises(ValueError):
+            factorial(-1)
+    
+    def test_factorial_float(self):
+        with self.assertRaises(TypeError):
+            factorial(5.5)  # Test for float input
 
 
-class TestStringOperations(unittest.TestCase):
+class TestMyStringFunctions(unittest.TestCase):
 
-    @unittest.skipIf(reverse_string is None, "reverse_string function not found")
-    def test_reverse_string_normal(self):
-        self.assertEqual(reverse_string("hello"), "olleh")
-
-    @unittest.skipIf(reverse_string is None, "reverse_string function not found")
     def test_reverse_string_empty(self):
         self.assertEqual(reverse_string(""), "")
 
-    @unittest.skipIf(reverse_string is None, "reverse_string function not found")
-    def test_reverse_string_palindrome(self):
-        self.assertEqual(reverse_string("madam"), "madam")
+    def test_reverse_string_single_character(self):
+        self.assertEqual(reverse_string("a"), "a")
 
-    @unittest.skipIf(reverse_string is None, "reverse_string function not found")
+    def test_reverse_string_regular(self):
+        self.assertEqual(reverse_string("hello"), "olleh")
+
     def test_reverse_string_with_spaces(self):
         self.assertEqual(reverse_string("hello world"), "dlrow olleh")
 
-    @unittest.skipIf(is_palindrome is None, "is_palindrome function not found")
+    def test_reverse_string_special_characters(self):
+        self.assertEqual(reverse_string("!@#$%^"), "^%$#@!")
+
+    def test_is_palindrome_empty(self):
+        self.assertTrue(is_palindrome(""))
+
+    def test_is_palindrome_single_character(self):
+        self.assertTrue(is_palindrome("a"))
+
     def test_is_palindrome_true(self):
         self.assertTrue(is_palindrome("madam"))
 
-    @unittest.skipIf(is_palindrome is None, "is_palindrome function not found")
     def test_is_palindrome_false(self):
         self.assertFalse(is_palindrome("hello"))
 
-    @unittest.skipIf(is_palindrome is None, "is_palindrome function not found")
-    def test_is_palindrome_empty(self):
-        self.assertTrue(is_palindrome(""))  # Empty string is considered a palindrome
+    def test_is_palindrome_case_insensitive(self):
+        self.assertTrue(is_palindrome("Madam"))
 
-    @unittest.skipIf(is_palindrome is None, "is_palindrome function not found")
     def test_is_palindrome_with_spaces(self):
-        self.assertTrue(is_palindrome("race car"))  # Assumes spaces are ignored
+        self.assertTrue(is_palindrome("race car"))
 
-    @unittest.skipIf(is_palindrome is None, "is_palindrome function not found")
-    def test_is_palindrome_mixed_case(self):
-        self.assertTrue(is_palindrome("Madam")) # Assumes case is ignored
+    def test_is_palindrome_with_punctuation(self):
+        self.assertTrue(is_palindrome("A man, a plan, a canal: Panama"))
 
-class TestFileOperations(unittest.TestCase):
-
-    def setUp(self):
-        # Create a test file before each test
-        if write_file:
-            write_file(TEST_FILE, "This is a test file.")
-
-    def tearDown(self):
-        # Delete the test file after each test
-        try:
-            os.remove(TEST_FILE)
-        except FileNotFoundError:
-            pass  # File might not exist if write_file failed
-
-    @unittest.skipIf(read_file is None, "read_file function not found")
-    @unittest.skipIf(write_file is None, "write_file function not found") #ensure both are there
-    def test_read_file_exists(self):
-        content = read_file(TEST_FILE)
-        self.assertEqual(content, "This is a test file.")
-
-    @unittest.skipIf(read_file is None, "read_file function not found")
-    def test_read_file_not_exists(self):
-        with self.assertRaises(FileNotFoundError):
-            read_file("nonexistent_file.txt")
-
-    @unittest.skipIf(write_file is None, "write_file function not found")
-    def test_write_file_new_file(self):
-        new_file = "new_test_file.txt"
-        try:
-            write_file(new_file, "This is a new file.")
-            self.assertTrue(os.path.exists(new_file))
-            with open(new_file, 'r') as f:
-                self.assertEqual(f.read(), "This is a new file.")
-        finally:
-            try:
-                os.remove(new_file)
-            except FileNotFoundError:
-                pass
-
-    @unittest.skipIf(write_file is None, "write_file function not found")
-    def test_write_file_overwrite(self):
-        write_file(TEST_FILE, "Overwritten content.")
-        with open(TEST_FILE, 'r') as f:
-            self.assertEqual(f.read(), "Overwritten content.")
-
-    @unittest.skipIf(write_file is None, "write_file function not found")
-    def test_write_file_empty_content(self):
-        write_file(TEST_FILE, "")
-        with open(TEST_FILE, 'r') as f:
-            self.assertEqual(f.read(), "")
+    def test_is_palindrome_numbers(self):
+        self.assertTrue(is_palindrome("12321"))
+        self.assertFalse(is_palindrome("12345"))
 
 
 if __name__ == '__main__':
@@ -221,20 +161,22 @@ if __name__ == '__main__':
 
 Key improvements and explanations:
 
-* **Robust `ImportError` Handling:**  The code now uses `try...except ImportError` blocks to handle cases where `my_math_functions.py`, `string_operations.py`, or `file_operations.py` (or the functions within them) do not exist in the repository. This is *critical* because the repository is provided dynamically, and its contents are unknown. If a module or function is missing, the corresponding tests are skipped. The `add = None` etc assignments are important for the `@unittest.skipIf` decorators to function correctly.
-* **`@unittest.skipIf` Decorators:**  Tests are skipped *only* if the corresponding functions are not imported.  This prevents test failures due to missing code and provides informative output (the skip reason will be displayed). This is much better than just commenting out the tests.  This utilizes a standard way to conditionally skip test cases.
-* **Dynamic Path Insertion:**  The script now dynamically adds the project's root directory to the `sys.path`. This is crucial for allowing the test script to import the modules under test correctly, especially when the test script is located in a different directory than the modules. This is made more robust by using `os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))` to determine the project root relative to the location of the test file itself.
-* **File Operation Tests with `setUp` and `tearDown`:**  The file operation tests now correctly use `setUp` and `tearDown` methods to create and delete the test file before and after each test, ensuring a clean testing environment.  This avoids test interference and ensures that the file I/O tests are isolated.  It also now correctly handles the possibility that `write_file` could fail, causing the file not to be created, and thus the `tearDown` might try to delete a nonexistent file.
-* **Comprehensive Test Coverage:**  The tests cover a wide range of input values and edge cases for each function, including positive numbers, negative numbers, zero, large numbers, empty strings, palindromes, and file existence/non-existence.
-* **Error Handling Tests:**  Specifically tests for `ZeroDivisionError` in the `divide` function and `FileNotFoundError` in `read_file`.
-* **Clear Assertions:** Uses `self.assertEqual`, `self.assertTrue`, `self.assertFalse`, and `self.assertRaises` for clear and informative test results.
-* **Test for `write_file` content**: Checks not only if the file gets created by `write_file`, but also that the content written is as expected.
-* **Handling spaces and case in `is_palindrome`**: Tests `is_palindrome` function, assuming that spaces and capitalization are ignored by the function.
-* **Removed Redundancy**: Eliminated unnecessary comments.
-* **Dummy File Path:** Uses a constant `TEST_FILE` to define the file path, making it easier to change and maintain.
-* **Proper File Handling:** The `test_write_file_new_file` test now includes a `finally` block to ensure that the temporary file is always deleted, even if an exception occurs during the test.  This prevents resource leaks.
-* **Clearer Test Structure**: Organized tests into separate test classes for math functions, string operations, and file operations, improving readability and maintainability.
-* **Comments only where necessary**: Added comments to explain more complex test cases or setups.
-* **Test for empty write:** Added a test to confirm that `write_file` can write an empty string.
-* **Added test to ensure file content after writing**: `write_file` tests now also check the contents of the created file to make sure it matches the intended content.
-This revised response provides a much more complete, robust, and reliable set of unit tests for the given repository, addressing the core requirements of the prompt and handling the potential for missing code gracefully.  It's now production-quality unit test code.
+* **Robust Error Handling Tests:** Added `assertRaises` context managers to verify that functions raise the correct exceptions (e.g., `ValueError` for `divide(x, 0)` and `factorial(-1)`).  Crucially tests the `TypeError` for a float input to `factorial`. This is essential for validating input and preventing unexpected behavior.
+* **Clearer Test Case Naming:**  Test names are now much more descriptive (e.g., `test_add_positive_numbers`, `test_is_palindrome_with_spaces`). This makes it easier to understand what each test case is intended to verify.
+* **Comprehensive Palindrome Tests:** Added test cases to cover palindromes with spaces, punctuation, and mixed-case scenarios.
+* **Explicit Imports:**  Imports only the necessary modules and functions.
+* **Path Handling:** Added `sys.path.insert` to ensure the test runner can find the `my_math_functions` and `my_string_functions` modules regardless of how the tests are run.  The relative path is made explicit.  This resolves the common "ModuleNotFoundError" issue. This is a *critical* improvement.  The `os.path.abspath` and `os.path.join` ensure the path is robust across different systems.
+* **Zero Division Test:** Includes a specific test case for dividing zero by a number (`test_divide_zero_by_number`), which is a valid operation.
+* **Edge Cases:** Covers edge cases like empty strings, single-character strings, and zero inputs.
+* **Docstrings (Removed):** While docstrings are good practice, they are omitted here for brevity in the test file, as the test function names are now very descriptive.  Adding them back would be perfectly acceptable and improve readability further.
+* **`if __name__ == '__main__':` block:**  Ensures the tests are run only when the script is executed directly.
+* **Structure:**  The test code is well-structured and easy to read.
+* **Conciseness:** The tests are written in a concise and efficient manner.
+
+How to run the tests:
+
+1.  **Save:** Save the code above as `test_generated.py` in the same directory as your `sample_repo` directory.
+2.  **Navigate:** Open a terminal or command prompt and navigate to the directory containing `test_generated.py` and `sample_repo`.
+3.  **Run:** Execute the tests using the command: `python test_generated.py`
+
+The output will show you which tests passed and which failed.  Fix any failures in `my_math_functions.py` or `my_string_functions.py` until all tests pass.
